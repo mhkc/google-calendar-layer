@@ -1,0 +1,35 @@
+#+TITLE: Google calendar layer
+
+[[file:./img/gcal.png]]
+* Table of Contents                                        :TOC_4_gh:noexport:
+ - [[#description][Description]]
+ - [[#install][Install]]
+ - [[#configuration][Configuration]]
+   - [[#configure-org-gcal][Configure org-gcal]]
+   - [[#configure-calfw][Configure calfw]]
+   - [[#configure-alert][Configure alert]]
+   - [[#schedule-events-with-org-capture][Schedule events with org-capture]]
+ - [[#key-bindings][Key bindings]]
+
+* Description
+This layer does wonderful things:
+  - thing01
+
+* Install
+To use this configuration layer, add it to your =~/.spacemacs=. You will need to
+add =calendar= to the existing =dotspacemacs-configuration-layers= list in this
+file.
+
+* Configuration
+** Configure org-gcal
+** Configure calfw
+** Configure alert
+** Schedule events with org-capture
+* Key bindings
+The following are Spacemacs shortcuts.
+| Key Binding | Description         |
+|-------------+---------------------|
+| ~SPC a g f~ | Fetch new events    |
+| ~SPC a g s~ | Sync calendar       |
+| ~SPC a g r~ | Refresh OAuth token |
+| ~SPC a g c~ | Open calendar view  |
