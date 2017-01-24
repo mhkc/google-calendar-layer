@@ -37,9 +37,10 @@
   "Initialize calfw"
   (use-package calfw-org
     :init
+    (setq google-calendar-agenda-view "a")
     (progn
       (spacemacs/set-leader-keys
-        "agc" 'cfw:open-org-calendar))
+        "agc" '(lambda () (org-agenda nil google-calendar-agenda-view)(cfw:open-org-calendar))))
     :commands
     (cfw:open-org-calendar)
     ))
