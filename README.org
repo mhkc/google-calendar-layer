@@ -1,4 +1,5 @@
 #+TITLE: Google calendar layer
+#+STARTUP: showall
 
 [[file:./img/gcal.png]]
 * Table of Contents                                        :TOC_4_gh:noexport:
@@ -6,27 +7,93 @@
  - [[#install][Install]]
  - [[#configuration][Configuration]]
    - [[#configure-org-gcal][Configure org-gcal]]
+     - [[#create-credentials][Create credentials]]
+     - [[#setup-org-gcal][Setup org-gcal]]
    - [[#configure-calfw][Configure calfw]]
    - [[#configure-alert][Configure alert]]
    - [[#schedule-events-with-org-capture][Schedule events with org-capture]]
  - [[#key-bindings][Key bindings]]
 
 * Description
-This layer does wonderful things:
-  - thing01
+This layer provides two-way Google calendar synchronization using the =org-gcal= package. The calendar events can either be viewed in org-agenda or in =calfw's= dedicated calendar view.
 
 * Install
-To use this configuration layer, add it to your =~/.spacemacs=. You will need to
-add =calendar= to the existing =dotspacemacs-configuration-layers= list in this
-file.
+To use this configuration layer, add it to your =~/.spacemacs=. You will need to add =calendar= to the existing =dotspacemacs-configuration-layers= list in this file.
 
 * Configuration
 ** Configure org-gcal
+To use sync your Google calendar with [[https://github.com/myuhe/org-gcal.el][org-gcal]] you need Auth credentials.
+*** Create credentials
+1. Go to [[https://console.developers.google.com/iam-admin/projects][Google Developers Console]]
+2. Create a project (with any name)
+3. Go to [[https://console.developers.google.com/apis/api/calendar/][Google Calendar API]] and enable the API
+4. Click on [[https://console.developers.google.com/apis/credentials][Credentials]] and create a new "OAuth client ID" and select the Application type "Other".
+5. Click on Create Client ID
+6. Save the Client ID and Client secret for later.
+7. Go to the calendar setting of your [[https://calendar.google.com/calendar/][Google Caldendar]] by clicking on the cogwheel icon in the top right corner.
+8. Click on the "Calendar" that, which will display a list of your calendars.
+9. Select the calendar you want to synchronize with. Save the Calendar-ID which is located in the section called Calendar address, following the ICAL and HTML buttons.
+*** Setup org-gcal
+Copy the Calendar ID for use in the settings below, where you will use it as the first element in the =org-gcal-file-alist= for associating calendars with specific org files. You can associate different calendars with different org files, so repeat this for each calendar you want to use. Currently =org-gcal= do not support multiple Google accounts.
+#+BEGIN_SRC emacs-lisp
+  (setq org-gcal-client-id "YourClientId"
+        org-gcal-client-secret "YourSecret"
+        org-gcal-file-alist '(("your.email@gmail.com" . "/path/to/schedule.org")))
+#+END_SRC
 ** Configure calfw
+Calfw lets you customize the name of the months, days and which day is the first day of the week
+#+BEGIN_SRC emacs-lisp
+  ;; Month
+  (setq calendar-month-name-array
+    ["January" "February" "March"     "April"   "May"      "June"
+     "July"    "August"   "September" "October" "November" "December"])
+
+  ;; Week days
+  (setq calendar-day-name-array
+        ["Sunday" "Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday"])
+
+  ;; First day of the week
+  (setq calendar-week-start-day 1) ; 0:Sunday, 1:Monday
+#+END_SRC
 ** Configure alert
+Depending on your taste and OS you might want to set different notification styles. For macOS users =osx-notifier= or =growl= on older system might work the best.
+| Name          | Summary                                                            |
+|---------------+--------------------------------------------------------------------|
+| fringe        | Changes the current frame's fringe background color                |
+| mode-line     | Changes the current frame's mode-line background color             |
+| gntp          | Uses gntp, it requires [gntp.el](https://github.com/tekai/gntp.el) |
+| growl         | Uses Growl on OS X, if growlnotify is on the PATH                  |
+| ignore        | Ignores the alert entirely                                         |
+| libnotify     | Uses libnotify if notify-send is on the PATH                       |
+| log           | Logs the alert text to *Alerts*, with a timestamp                  |
+| message       | Uses the Emacs `message` facility                                  |
+| notifications | Uses notifications library via D-Bus                               |
+| notifier      | Uses terminal-notifier on OS X, if it is on the PATH               |
+| osx-notifier  | Native OSX notification using AppleScript                          |
+| toaster       | Use the toast notification system                                  |
+
+#+BEGIN_SRC emacs-lisp
+  (setq alert-default-style 'libnotify)
+#+END_SRC
 ** Schedule events with org-capture
+There are many ways to use this layer in conjunction with =org-agenda=, for instance you can capture tasks directly to the schedule org file for instance by using the following template.
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates
+        (quote
+          ("s" "Schedule an event" entry
+           (file "/path/to/schedule.org")
+           "* %?\n%^t" :empty-lines 1)))
+#+END_SRC
+To convert the newly to a calendar event you need to also add the following function to the =org-capture-after-finalize-hook=. The function checks if the capture entry is put in one of the calendar org files, and if so creates an calendar event of the file.
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-capture-after-finalize-hook 'google-calendar/sync-cal-after-capture)
+#+END_SRC
+
+For a calendar event to be considered valid by =org-gcal= it needs.
+ - A header
+ - A non-interactive timestamp or time range.
 * Key bindings
-The following are Spacemacs shortcuts.
+Spacemacs leader key shortcuts.
 | Key Binding | Description         |
 |-------------+---------------------|
 | ~SPC a g f~ | Fetch new events    |
