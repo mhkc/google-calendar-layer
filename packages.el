@@ -25,35 +25,39 @@
       (spacemacs/set-leader-keys
         "agr" 'org-gcal-refresh-token
         "ags" 'org-gcal-sync
-        "agf" 'org-gcal-fetch)))
+        "agf" 'org-gcal-fetch))
+    :config
+    (add-hook 'after-init-hook 'org-gcal-fetch)
+    (add-hook 'kill-emacs-hook 'org-gcal-sync)
+    (add-hook 'org-capture-after-finalize-hook 'google-calendar/sync-cal-after-capture)
+    (run-with-idle-timer 600 t 'google-calendar/org-gcal-update)))
 
-  ;; Add hook for automatic fetch and sync
-  (add-hook 'after-init-hook 'org-gcal-fetch)
-  (add-hook 'kill-emacs-hook 'org-gcal-sync)
-  (add-hook 'org-capture-after-finalize-hook 'google-calendar/sync-cal-after-capture)
-  (run-with-idle-timer 600 t 'org-gcal-update))
+(defvar google-calendar-agenda-view "a")
 
 (defun google-calendar/init-calfw ()
   "Initialize calfw"
   (use-package calfw-org
     :init
-    (setq google-calendar-agenda-view "a")
-    (progn
-      (spacemacs/set-leader-keys
-        "agc" '(lambda () (org-agenda nil google-calendar-agenda-view)(cfw:open-org-calendar))))
+    (spacemacs/set-leader-keys
+      "agc" 'google-calendar/calfw-view)
+    (spacemacs/declare-prefix "agc" "open-org-calendar")
     :commands
-    (cfw:open-org-calendar)
-    ))
+    (cfw:open-org-calendar)))
+
+(defun google-calendar/calfw-view ()
+  (interactive)
+  (org-agenda nil google-calendar-agenda-view)
+  (cfw:open-org-calendar))
 
 (defun google-calendar/init-alert ()
   "Initialize alert"
   (use-package alert
     :defer t
     :init
-    (setq alert-default-style 'libnotify)))
+    (setq alert-default-style 'notifications)))
 
 (defun google-calendar/init-f ()
-  "Initialize alert"
+  "Initialize f"
   (use-package f))
 
 ;;; packages.el ends here
