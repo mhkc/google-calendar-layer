@@ -55,6 +55,13 @@ Calfw lets you customize the name of the months, days and which day is the first
   ;; First day of the week
   (setq calendar-week-start-day 1) ; 0:Sunday, 1:Monday
 #+END_SRC
+In Calfw calendar view you can capture TODOs or events. To do so you need to bind a [[http://orgmode.org/manual/Capture-templates.html][org-capture template]] to the variable =cfw:org-capture-template=. The following are an example template for creating a event that would work with the =google-calendar/sync-cal-after-capture= function.
+#+NAME: org-event-schedule
+#+BEGIN_SRC emacs-lisp
+     (setq cfw:org-capture-template '("s" "Scedule an event" entry
+                                      (file "/path/to/schedule.org")
+                                      "* %^{Description}\n%(cfw:org-capture-day)\n%?"))
+#+END_SRC
 ** Configure alert
 Depending on your taste and OS you might want to set different notification styles. For macOS users =osx-notifier= or =growl= on older system might work the best.
 | Name          | Summary                                                            |
@@ -76,14 +83,7 @@ Depending on your taste and OS you might want to set different notification styl
   (setq alert-default-style 'libnotify)
 #+END_SRC
 ** Schedule events with org-capture
-There are many ways to use this layer in conjunction with =org-agenda=, for instance you can capture tasks directly to the schedule org file for instance by using the following template.
-#+BEGIN_SRC emacs-lisp
-  (setq org-capture-templates
-        (quote
-          ("s" "Schedule an event" entry
-           (file "/path/to/schedule.org")
-           "* %?\n%^t" :empty-lines 1)))
-#+END_SRC
+There are many ways to use this layer in conjunction with =org-agenda=, for instance you can capture tasks directly to the schedule org file for instance by using the template described [[org-event-schedule][above]].
 To convert the newly to a calendar event you need to also add the following function to the =org-capture-after-finalize-hook=. The function checks if the capture entry is put in one of the calendar org files, and if so creates an calendar event of the file.
 #+BEGIN_SRC emacs-lisp
   (add-hook 'org-capture-after-finalize-hook 'google-calendar/sync-cal-after-capture)
@@ -100,3 +100,35 @@ Spacemacs leader key shortcuts.
 | ~SPC a g s~ | Sync calendar       |
 | ~SPC a g r~ | Refresh OAuth token |
 | ~SPC a g c~ | Open calendar view  |
+
+Changing the calendar view.
+| Key Binding | Description                 |
+|-------------+-----------------------------|
+| ~D~         | Day view                    |
+| ~W~         | Week view                   |
+| ~T~         | Two weeks view              |
+| ~M~         | Month view                  |
+
+Navigation in calendar view.
+| Key Binding | Description                |
+|-------------+----------------------------|
+| ~l~         | Go right                   |
+| ~h~         | Go left                    |
+| ~k~         | Go up                      |
+| ~j~         | Go down                    |
+| ~n~         | Next week                  |
+| ~p~         | Previous week              |
+| ~N~         | Next month                 |
+| ~P~         | Previous month             |
+| ~t~         | Today                      |
+| ~g~         | Absolute date (YYYY/MM/DD) |
+| ~TAB~       | Next item in a day         |
+
+Actions you can perform in calendar view.
+| Key Binding | Description                 |
+|-------------+-----------------------------|
+| ~c~         | Capture new event           |
+| ~v~         | Pop-up detail agenda buffer |
+| ~r~         | Refresh buffer              |
+| ~RET~       | Jump                        |
+| ~q~         | Bury buffer                 |
