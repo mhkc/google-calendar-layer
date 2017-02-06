@@ -27,6 +27,7 @@
         "ags" 'org-gcal-sync
         "agf" 'org-gcal-fetch))
     :config
+    (setq org-gcal-down-days 365)   ;; Set org-gcal to download events a year in advance
     (add-hook 'after-init-hook 'org-gcal-fetch)
     (add-hook 'kill-emacs-hook 'org-gcal-sync)
     (add-hook 'org-capture-after-finalize-hook 'google-calendar/sync-cal-after-capture)
@@ -36,11 +37,24 @@
 
 (defun google-calendar/init-calfw ()
   "Initialize calfw"
+
+  (use-package calfw
+    :init
+    (evil-set-initial-state 'cfw:calendar-mode 'normal)
+
+    :config
+    (evil-make-overriding-map cfw:calendar-mode-map)
+    (define-key cfw:calendar-mode-map "N" 'cfw:navi-next-month-command)
+    (define-key cfw:calendar-mode-map "P" 'cfw:navi-previous-month-command)
+    (define-key cfw:calendar-mode-map "c" 'cfw:org-capture)
+    (define-key cfw:calendar-mode-map "v" 'cfw:org-open-agenda-day))
+
   (use-package calfw-org
     :init
     (spacemacs/set-leader-keys
       "agc" 'google-calendar/calfw-view)
     (spacemacs/declare-prefix "agc" "open-org-calendar")
+
     :commands
     (cfw:open-org-calendar)))
 
