@@ -40,8 +40,11 @@ Copy the Calendar ID for use in the settings below, where you will use it as the
         org-gcal-client-secret "YourSecret"
         org-gcal-file-alist '(("your.email@gmail.com" . "/path/to/schedule.org")))
 #+END_SRC
+
 ** Configure calfw
-Calfw lets you customize the name of the months, days and which day is the first day of the week
+When you close the calendar view this layer tries to restore the previous window configuration, if you would like to disable this behavior set =calfw-restore-windows-after-quit= to nil.
+
+Calfw lets you customize the name of the months and days by altering the following arrays.
 #+BEGIN_SRC emacs-lisp
   ;; Month
   (setq calendar-month-name-array
@@ -51,10 +54,14 @@ Calfw lets you customize the name of the months, days and which day is the first
   ;; Week days
   (setq calendar-day-name-array
         ["Sunday" "Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday"])
+#+END_SRC
 
+You can also change which day the week begins with the following variable.
+#+BEGIN_SRC emacs-lisp
   ;; First day of the week
   (setq calendar-week-start-day 1) ; 0:Sunday, 1:Monday
 #+END_SRC
+
 In Calfw calendar view you can capture TODOs or events. To do so you need to bind a [[http://orgmode.org/manual/Capture-templates.html][org-capture template]] to the variable =cfw:org-capture-template=. The following are an example template for creating a event that would work with the =google-calendar/sync-cal-after-capture= function.
 #+NAME: org-event-schedule
 #+BEGIN_SRC emacs-lisp
@@ -62,6 +69,7 @@ In Calfw calendar view you can capture TODOs or events. To do so you need to bin
                                       (file "/path/to/schedule.org")
                                       "* %^{Description}\n%(cfw:org-capture-day)\n%?"))
 #+END_SRC
+
 ** Configure alert
 Depending on your taste and OS you might want to set different notification styles. For macOS users =osx-notifier= or =growl= on older system might work the best.
 | Name          | Summary                                                            |
@@ -82,6 +90,7 @@ Depending on your taste and OS you might want to set different notification styl
 #+BEGIN_SRC emacs-lisp
   (setq alert-default-style 'libnotify)
 #+END_SRC
+
 ** Schedule events with org-capture
 There are many ways to use this layer in conjunction with =org-agenda=, for instance you can capture tasks directly to the schedule org file for instance by using the template described [[org-event-schedule][above]].
 To convert the newly to a calendar event you need to also add the following function to the =org-capture-after-finalize-hook=. The function checks if the capture entry is put in one of the calendar org files, and if so creates an calendar event of the file.
@@ -92,6 +101,7 @@ To convert the newly to a calendar event you need to also add the following func
 For a calendar event to be considered valid by =org-gcal= it needs.
  - A header
  - A non-interactive timestamp or time range.
+
 * Key bindings
 Spacemacs leader key shortcuts.
 | Key Binding | Description         |
@@ -131,4 +141,4 @@ Actions you can perform in calendar view.
 | ~v~         | Pop-up detail agenda buffer |
 | ~r~         | Refresh buffer              |
 | ~RET~       | Jump                        |
-| ~q~         | Bury buffer                 |
+| ~q~         | Quit calendar view          |
