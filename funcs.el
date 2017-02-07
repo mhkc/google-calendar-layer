@@ -26,3 +26,26 @@ The function can be run automatically with the 'org-capture-after-finalize-hook'
                (capture-target-is-cal-file (member capture-target cal-files)))
       (org-gcal-refresh-token)
       (org-gcal-post-at-point))))
+
+(when (configuration-layer/package-usedp 'calfw)
+  (defun google-calendar/calfw-view ()
+    "Open calfw calendar view."
+    (interactive)
+    (google-calendar/calfw-prepare-window)
+    (org-agenda nil google-calendar-agenda-view)
+    (cfw:open-org-calendar))
+
+  (defun google-calendar/calfw-prepare-window ()
+    "Store current window layout in before opening calfw."
+    (when-let ((is-not-cal-buffer (not (member (buffer-name) '("*cfw-calendar*" "*Org Agenda*"))))
+               (is-not-conf (not (equal wconf '(current-window-configuration)))))
+      (setq wconf (current-window-configuration))))
+
+  (defun google-calendar/calfw-restore-windows ()
+    "Bury current buffer and restore window layout."
+    (interactive)
+    (bury-buffer)
+    (if (and (not (eq wconf nil))
+             (eq calfw-restore-windows-after-quit 't))
+        (progn (set-window-configuration wconf)
+               (setq wconf nil)))))

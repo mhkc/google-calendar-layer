@@ -33,14 +33,23 @@
     (add-hook 'org-capture-after-finalize-hook 'google-calendar/sync-cal-after-capture)
     (run-with-idle-timer 600 t 'google-calendar/org-gcal-update)))
 
-(defvar google-calendar-agenda-view "a")
-
 (defun google-calendar/init-calfw ()
   "Initialize calfw"
 
   (use-package calfw
     :init
     (evil-set-initial-state 'cfw:calendar-mode 'normal)
+    (defvar google-calendar-agenda-view "a"
+      "Key for opening the current week or day view in org-agenda.")
+
+    (defvar wconf nil
+      "Current window config")
+
+    (defcustom calfw-restore-windows-after-quit 't
+      "Non-nil means restore window configuration upon exiting calfw calendar view.
+The window configuration is stored when entering calendar view.
+When the view is exited and this option is set the previous layout is restored."
+      :type 'boolean)
 
     :config
     (evil-make-overriding-map cfw:calendar-mode-map)
@@ -55,18 +64,15 @@
       "agc" 'google-calendar/calfw-view)
     (spacemacs/declare-prefix "agc" "open-org-calendar")
 
+    :config
+    (define-key cfw:org-schedule-map "q" 'google-calendar/calfw-restore-windows)
+
     :commands
     (cfw:open-org-calendar)))
-
-(defun google-calendar/calfw-view ()
-  (interactive)
-  (org-agenda nil google-calendar-agenda-view)
-  (cfw:open-org-calendar))
 
 (defun google-calendar/init-alert ()
   "Initialize alert"
   (use-package alert
-    :defer t
     :init
     (setq alert-default-style 'notifications)))
 
