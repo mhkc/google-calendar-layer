@@ -67,7 +67,7 @@ You need to include the calendar event files in =org-agenda=, do so by adding th
 You can create new calendar events from any Emacs buffer with =org-capture=. This layer provides convenient accessory functions that automatically synchronize the new event to Google calendar, [[*Schedule events with org-capture][see below]].
 
 ** Configure calfw
-When you close the calendar view this layer tries to restore the previous window configuration, if you would like to disable this behavior set =calfw-restore-windows-after-quit= to nil.
+You can configure how the calfw calendar buffer should be displayed by altering the variable =calfw-calendar-window-setup=. When you close the calendar view this layer tries to restore the previous window configuration, if you would like to disable this behavior set =calfw-restore-windows-after-quit= to nil.
 
 Calfw lets you customize the name of the months and days by altering the following arrays.
 #+BEGIN_SRC emacs-lisp
@@ -87,12 +87,12 @@ You can also change which day the week begins with the following variable.
   (setq calendar-week-start-day 1) ; 0:Sunday, 1:Monday
 #+END_SRC
 
-In Calfw calendar view you can capture TODOs or events. To do so you need to bind a [[http://orgmode.org/manual/Capture-templates.html][org-capture template]] to the variable =cfw:org-capture-template=. The following are an example template for creating a event that would work with the =google-calendar/sync-cal-after-capture= function.
+In Calfw calendar view you can capture TODOs or events. To do so you need to bind a [[http://orgmode.org/manual/Capture-templates.html][org-capture template]] to the variable =cfw:org-capture-template=. The following are an example template for creating a calendar event that works with the =google-calendar/sync-cal-after-capture= function.
 #+NAME: org-event-schedule
 #+BEGIN_SRC emacs-lisp
      (setq cfw:org-capture-template '("s" "Scedule an event" entry
                                       (file "/path/to/a/schedule/file.org")
-                                      "* %^{Description}\n%(cfw:org-capture-day)\n%?"))
+                                      "* %^{Description}\n%^{LOCATION}p\n%(cfw:org-capture-day)\n%?"))
 #+END_SRC
 
 ** Configure alert
