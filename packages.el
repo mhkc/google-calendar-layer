@@ -13,7 +13,8 @@
 
 (defconst google-calendar-packages
   '(org-gcal
-    calfw))
+    calfw
+    calfw-org))
 
 (defun google-calendar/init-org-gcal ()
   "Initializes org-gcal and adds keybindings for it's exposed functions"
