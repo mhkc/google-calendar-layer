@@ -73,7 +73,10 @@ other-frame                 Use `switch-to-buffer-other-frame' to display calend
     (define-key cfw:calendar-mode-map "N" 'cfw:navi-next-month-command)
     (define-key cfw:calendar-mode-map "P" 'cfw:navi-previous-month-command)
     (define-key cfw:calendar-mode-map "c" 'cfw:org-capture)
-    (define-key cfw:calendar-mode-map "v" 'cfw:org-open-agenda-day))
+    (define-key cfw:calendar-mode-map "v" 'cfw:org-open-agenda-day)))
+
+(defun google-calendar/init-calfw-org ()
+  "Initialize calfw-org"
 
   (use-package calfw-org
     :init
