@@ -21,9 +21,9 @@
     :init
     (progn
       (spacemacs/set-leader-keys
-        "agr" 'org-gcal-refresh-token
-        "ags" 'org-gcal-sync
-        "agf" 'org-gcal-fetch))
+        "aGr" 'org-gcal-refresh-token
+        "aGs" 'org-gcal-sync
+        "aGf" 'org-gcal-fetch))
     :config
     (setq org-gcal-down-days 365)   ;; Set org-gcal to download events a year in advance
     (add-hook 'after-init-hook 'org-gcal-fetch)
@@ -77,8 +77,8 @@ other-frame                 Use `switch-to-buffer-other-frame' to display calend
   (use-package calfw-org
     :init
     (spacemacs/set-leader-keys
-      "agc" 'google-calendar/calfw-view)
-    (spacemacs/declare-prefix "agc" "open-org-calendar")
+      "aGc" 'google-calendar/calfw-view)
+    (spacemacs/declare-prefix "aGc" "open-org-calendar")
 
     :config
     (define-key cfw:org-schedule-map "q" 'google-calendar/calfw-restore-windows)

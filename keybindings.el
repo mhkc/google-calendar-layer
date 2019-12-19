@@ -9,4 +9,4 @@
 ;;
 ;;; License: GPLv3
 
-(spacemacs/declare-prefix "ag" "google-calendar")
+(spacemacs/declare-prefix "aG" "google-calendar")
